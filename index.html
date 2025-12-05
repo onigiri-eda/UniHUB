@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выбор Университета - Найди свой идеальный вуз</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <!-- Header & Navigation -->
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">🎓 UniChoice</a>
+            <nav>
+                <button id="mobileMenuToggle" class="mobile-menu-toggle">☰</button>
+                <ul id="navMenu" class="nav-links">
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="iitu.html">IITU</a></li>
+                    <li><a href="kbtu.html">KBTU</a></li>
+                    <li><a href="uib.html">UIB</a></li>
+                    <li><a href="aitu.html">AITU</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Welcome Section -->
+        <section class="welcome-section section">
+            <h1>Добро пожаловать, абитуриент! 👋</h1>
+            <p>Пройдите короткий опрос, чтобы мы подобрали лучший университет для вас</p>
+            <button id="startSurveyBtn" class="btn btn-primary btn-large">Начать опрос</button>
+        </section>
+
+        <!-- Survey Section -->
+        <section id="surveySection" class="survey-section section">
+            <h2>Анкета для выбора университета</h2>
+            <form id="surveyForm" class="survey-form">
+                <!-- Question 1 -->
+                <div class="form-group">
+                    <label for="specialization">Какая ваша специальность?</label>
+                    <select id="specialization" name="specialization" required>
+                        <option value="">Выберите специальность...</option>
+                        <option value="IT Programming">IT / Программирование</option>
+                        <option value="Data Science">Data Science / AI</option>
+                        <option value="Engineering">Инженерия (общая)</option>
+                        <option value="Civil Engineering">Гражданское строительство</option>
+                        <option value="Mechanical Engineering">Машиностроение</option>
+                        <option value="Oil and Gas Petroleum">Нефть и газ</option>
+                        <option value="Business Management">Бизнес и менеджмент</option>
+                        <option value="Architecture">Архитектура</option>
+                        <option value="Other">Другое</option>
+                    </select>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="form-group">
+                    <label for="city">В каком городе вы хотите учиться?</label>
+                    <select id="city" name="city" required>
+                        <option value="">Выберите город...</option>
+                        <option value="Almaty">Алматы</option>
+                        <option value="Aktau">Актау</option>
+                        <option value="Atyrau">Атырау</option>
+                        <option value="Other">Другой город</option>
+                    </select>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="form-group">
+                    <label for="international">Насколько вам важны международные программы?</label>
+                    <select id="international" name="international" required>
+                        <option value="">Выберите важность...</option>
+                        <option value="High">Очень важны</option>
+                        <option value="Medium">Важны</option>
+                        <option value="Low">Не очень важны</option>
+                    </select>
+                </div>
+
+                <!-- Question 4 -->
+                <div class="form-group">
+                    <label for="budget">Ваш бюджет на обучение в год?</label>
+                    <select id="budget" name="budget" required>
+                        <option value="">Выберите бюджет...</option>
+                        <option value="Low">До 1.5 млн KZT</option>
+                        <option value="Medium">1.5 - 2.5 млн KZT</option>
+                        <option value="High">Свыше 2.5 млн KZT</option>
+                    </select>
+                </div>
+
+                <!-- Question 5 -->
+                <div class="form-group">
+                    <label for="priority">Что для вас важнее при выборе?</label>
+                    <select id="priority" name="priority" required>
+                        <option value="">Выберите приоритет...</option>
+                        <option value="Quality">Качество образования</option>
+                        <option value="Reputation">Репутация университета</option>
+                        <option value="Innovation">Инновационный подход</option>
+                        <option value="Career">Перспективы трудоустройства</option>
+                    </select>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="form-actions">
+                    <button type="button" id="showResultsBtn" class="btn btn-primary">Показать результаты</button>
+                    <button type="reset" class="btn btn-secondary">Очистить форму</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Results Container (will be populated by JavaScript) -->
+        <div id="resultsContainer" class="best-match-container"></div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 UniChoice - Помощь в выборе университета</p>
+        <p>Все данные представлены в информационных целях</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/universities.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/chat.js"></script>
+</body>
+
+</html>
