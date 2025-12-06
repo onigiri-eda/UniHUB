@@ -1,0 +1,463 @@
+================================================================================
+                    GROK CHATBOT INTEGRATION - DOCUMENTATION
+                              UniHUB AI Assistant
+================================================================================
+
+PROJECT OVERVIEW
+================================================================================
+
+Мы интегрировали GROK AI (от компании xAI) в качестве замены OpenAI GPT-3.5-turbo.
+GROK теперь работает как интеллектуальный ассистент для помощи студентам в выборе
+университета на основе данных PostgreSQL базы данных.
+
+GROK FEATURES:
+- Доступ к реальным данным университетов из PostgreSQL
+- Поддержка функции сравнения двух университетов
+- Быстрые и точные ответы на вопросы на русском языке
+- Основан на последних данных университетов в Казахстане
+- Интеграция с Backend API для получения свежих данных
+
+================================================================================
+                        ARCHITECTURE & COMPONENTS
+================================================================================
+
+1. FRONTEND (js/chat.js)
+   ├── createChatWidget() - создает UI чат-виджета
+   ├── loadDatabaseData() - загружает данные из PostgreSQL через API
+   ├── sendChatMessage() - обрабатывает сообщения пользователя
+   ├── isComparisonRequest() - определяет запрос на сравнение университетов
+   ├── handleUniversityComparison() - обрабатывает сравнение двух универов
+   ├── getGROKResponse() - отправляет запрос в GROK API с контекстом БД
+   └── formatComparisonResponse() - форматирует результаты сравнения
+
+2. BACKEND (server.js)
+   ├── /api/all-data - GET - возвращает все данные из БД для контекста чата
+   ├── /api/compare-universities - GET - сравнивает два университета
+   └── Интеграция с PostgreSQL для извлечения данных
+
+3. DATABASE (PostgreSQL)
+   ├── universities - информация об университетах
+   ├── academic_programs - программы обучения
+   ├── admissions - требования к поступлению
+   └── international_cooperation - международные партнёры
+
+================================================================================
+                        CONFIGURATION DETAILS
+================================================================================
+
+GROK API Configuration:
+  API_KEY: 'xai-Ks4nKK3ub7HLn7GEp8aGqo8IbYt1DHmqo0XChqKPN5fM2xZ3D2Q1K5HvNxQQY'
+  API_URL: 'https://api.x.ai/v1/chat/completions'
+  MODEL: 'grok-beta'
+
+Backend URL:
+  BACKEND_URL: 'http://localhost:5000'
+
+PostgreSQL Connection:
+  Database: unichoice
+  User: postgres
+  Password: 1234
+  Host: localhost
+  Port: 5432
+
+================================================================================
+                     CHAT FUNCTIONALITY - HOW IT WORKS
+================================================================================
+
+1. INITIALIZATION
+   ├─ User opens index.html
+   ├─ DOMContentLoaded event triggered
+   ├─ initializeChat() creates chat widget
+   └─ loadDatabaseData() fetches all data from /api/all-data
+
+2. USER SENDS MESSAGE
+   ├─ sendChatMessage() called
+   ├─ User message added to chat
+   ├─ setLoadingState(true) shows typing indicator
+   └─ Checks if it's a comparison request
+
+3. NORMAL QUERY FLOW
+   ├─ buildSystemPromptWithDatabaseContext() creates system prompt with DB data
+   ├─ Messages array prepared with full database context
+   ├─ Fetch request to GROK API with:
+   │  ├─ Authorization: Bearer {API_KEY}
+   │  ├─ Model: grok-beta
+   │  └─ Messages: [system_prompt, user_messages]
+   ├─ GROK processes request and returns response
+   └─ Response displayed in chat with bot-message class
+
+4. COMPARISON REQUEST FLOW
+   ├─ isComparisonRequest() detects keywords:
+   │  ├─ "сравни", "сравнить", "vs", "разница", "отличие"
+   │  └─ Requires mentioning 2+ universities: iitu, aitu, kbtu, uib
+   ├─ Extract university names: uni1, uni2
+   ├─ Fetch to /api/compare-universities?uni1={UNI1}&uni2={UNI2}
+   ├─ Backend retrieves both universities with all related data:
+   │  ├─ university1: { name, programs[], admission[], cooperation[] }
+   │  └─ university2: { name, programs[], admission[], cooperation[] }
+   ├─ formatComparisonResponse() formats structured comparison
+   └─ Display comparison table in chat
+
+================================================================================
+                     API ENDPOINTS - DETAILS
+================================================================================
+
+1. GET /api/all-data
+   Purpose: Load full database context for chat AI
+   
+   Response:
+   {
+     "universities": [
+       {
+         "id": "iitu",
+         "name": "IITU",
+         "description": "...",
+         "location": "Almaty"
+       },
+       ...
+     ],
+     "programs": [
+       {
+         "university_id": "iitu",
+         "name": "Computer Science",
+         "level": "Bachelors"
+       },
+       ...
+     ],
+     "admission": [
+       {
+         "university_id": "iitu",
+         "requirement": "..."
+       },
+       ...
+     ],
+     "cooperation": [
+       {
+         "university_id": "iitu",
+         "country": "USA",
+         "partner": "..."
+       },
+       ...
+     ]
+   }
+
+   Usage:
+   - Called once on page load
+   - Cached in databaseData variable
+   - Used in system prompt for GROK context
+
+2. GET /api/compare-universities?uni1=IITU&uni2=KBTU
+   Purpose: Get detailed comparison data between two universities
+   
+   Query Parameters:
+   - uni1: First university name (IITU, AITU, KBTU, or UIB)
+   - uni2: Second university name
+   
+   Response:
+   {
+     "university1": {
+       "id": "iitu",
+       "name": "IITU",
+       "location": "Almaty",
+       "programs": ["Computer Science", "Software Engineering", ...],
+       "admission": ["UNT Score: 80+", "English: B2", ...],
+       "cooperation": ["USA", "UK", "Canada", ...]
+     },
+     "university2": {
+       "id": "kbtu",
+       "name": "KBTU",
+       "location": "Almaty",
+       "programs": ["Engineering", "Architecture", ...],
+       "admission": ["UNT Score: 75+", "Physics: strong", ...],
+       "cooperation": ["Germany", "Switzerland", ...]
+     }
+   }
+   
+   SQL Query Used:
+   ```sql
+   SELECT u.*, 
+          array_agg(DISTINCT ap.name) as programs,
+          array_agg(DISTINCT adm.requirement) as admission,
+          array_agg(DISTINCT ic.country) as cooperation
+   FROM universities u
+   LEFT JOIN academic_programs ap ON u.id = ap.university_id
+   LEFT JOIN admissions adm ON u.id = adm.university_id
+   LEFT JOIN international_cooperation ic ON u.id = ic.university_id
+   WHERE LOWER(u.name) LIKE LOWER($1)
+   GROUP BY u.id
+   ```
+
+================================================================================
+                     EXAMPLE CONVERSATIONS
+================================================================================
+
+EXAMPLE 1: Normal Question
+User: "Какие программы есть в IITU?"
+
+Flow:
+1. sendChatMessage() called with user message
+2. isComparisonRequest() returns false (no comparison keywords)
+3. getGROKResponse() called
+4. System prompt includes all IITU programs from DB
+5. GROK response: "IITU предлагает следующие программы: Computer Science, 
+   Software Engineering, Cybersecurity... [based on database]"
+
+EXAMPLE 2: University Comparison
+User: "сравни IITU и KBTU"
+
+Flow:
+1. sendChatMessage() called
+2. isComparisonRequest() detects "сравни" keyword and 2 universities
+3. handleUniversityComparison() called
+4. Extract: uni1 = "IITU", uni2 = "KBTU"
+5. Fetch /api/compare-universities?uni1=IITU&uni2=KBTU
+6. Receive comparison data with programs, admission, cooperation
+7. formatComparisonResponse() creates structured comparison
+8. Display:
+   📊 СРАВНЕНИЕ: IITU ⚔️ KBTU
+   
+   Названия:
+   IITU: IITU
+   KBTU: KBTU
+   
+   Программы:
+   IITU: 15 программ
+   KBTU: 12 программ
+   Примеры IITU: Computer Science, Software Engineering
+   Примеры KBTU: Engineering, Architecture
+   
+   Требования к поступлению:
+   IITU: 3 требований
+   KBTU: 3 требований
+   
+   Международное сотрудничество:
+   IITU: 8 партнёров
+   KBTU: 6 партнёров
+   IITU: USA, UK, Canada, ...
+   KBTU: Germany, Switzerland, ...
+   
+   💡 Рекомендация: Выберите университет в зависимости от ваших приоритетов и интересов.
+
+EXAMPLE 3: International Programs
+User: "Какие международные партнёры у AITU?"
+
+Flow:
+1. databaseData loaded with all cooperation from DB
+2. System prompt contains full AITU cooperation list
+3. GROK responds based on actual database data
+4. Response: "AITU имеет партнёрства с: [countries from DB]"
+
+================================================================================
+                    SYSTEM PROMPT CONSTRUCTION
+================================================================================
+
+buildSystemPromptWithDatabaseContext() creates a prompt like:
+
+```
+You are GROK, an intelligent AI assistant helping students choose universities 
+in Kazakhstan.
+
+DATABASE CONTEXT - Real University Information from PostgreSQL:
+{
+  "universities": [
+    {
+      "id": "iitu",
+      "name": "IITU",
+      "description": "International IT University...",
+      "location": "Almaty"
+    },
+    ...
+  ],
+  "programs": [
+    {
+      "university_id": "iitu",
+      "name": "Computer Science",
+      ...
+    },
+    ...
+  ],
+  "admission": [...],
+  "cooperation": [...]
+}
+
+Your responsibilities:
+1. Answer questions about universities IITU, AITU, KBTU, UIB in Russian
+2. Provide accurate information from the database
+3. Help students compare universities
+4. Be helpful, professional, and encouraging
+5. Keep responses concise (max 300 words)
+6. Base answers on provided database information
+
+Important:
+- If asked to compare universities, use data from the database
+- Always respond in Russian
+- Be accurate and base answers on provided database information
+- Suggest using the comparison feature for detailed comparisons
+```
+
+This prompt ensures GROK has full context of all university data before answering.
+
+================================================================================
+                         ERROR HANDLING
+================================================================================
+
+1. Database Connection Error
+   └─ loadDatabaseData() catches error
+   └─ databaseData remains null
+   └─ System prompt contains "Database not loaded"
+   └─ GROK still provides general advice
+
+2. GROK API Error
+   └─ getGROKResponse() catches error
+   └─ response.ok check fails
+   └─ Error message: "Извините, произошла ошибка при обработке вашего запроса..."
+
+3. Comparison Data Not Found
+   └─ handleUniversityComparison() gets 404
+   └─ Error message: "Извините, не удалось получить данные для сравнения..."
+
+4. Invalid University Names
+   └─ /api/compare-universities returns error if university not found
+   └─ User informed: "One or both universities not found"
+
+================================================================================
+                      HOW TO EXTEND / CUSTOMIZE
+================================================================================
+
+1. ADD NEW UNIVERSITY
+   Step 1: Add to PostgreSQL database
+   Step 2: Update comparison logic (if needed)
+   Step 3: Add to isComparisonRequest() university list
+   Step 4: System prompt automatically includes new data
+
+2. ADD NEW COMPARISON CRITERIA
+   Step 1: Update /api/compare-universities to join more tables
+   Step 2: Update formatComparisonResponse() to display new data
+   Step 3: New criteria will appear in comparisons
+
+3. ADD SPECIALIZED QUERIES
+   Step 1: Create new backend endpoint (/api/universities-by-specialization)
+   Step 2: Update frontend to detect specialized keywords
+   Step 3: handleSpecializedQuery() calls new endpoint
+
+4. CUSTOMIZE SYSTEM PROMPT
+   Step 1: Edit buildSystemPromptWithDatabaseContext() function
+   Step 2: Add instructions for specific behaviors
+   Step 3: Changes apply to all GROK responses
+
+5. CHANGE AI MODEL
+   Step 1: Update CHAT_CONFIG.MODEL to different GROK model
+   Step 2: Or replace with different AI API (Claude, GPT-4, etc.)
+   Step 3: Update API_KEY and API_URL accordingly
+
+================================================================================
+                         PERFORMANCE NOTES
+================================================================================
+
+1. Database Data Caching
+   - All data loaded once on page load
+   - No repeated database queries during chat
+   - Reduces load and improves response time
+
+2. API Rate Limiting
+   - GROK API has rate limits (check xAI documentation)
+   - Current implementation doesn't have request throttling
+   - Consider adding if many concurrent users
+
+3. Message History
+   - All messages stored in chatMessages array
+   - Full conversation history sent to GROK each time
+   - Consider limiting to last N messages for long conversations
+
+4. Network Dependencies
+   - Requires connection to xAI API (https://api.x.ai)
+   - Requires connection to local backend (http://localhost:5000)
+   - Requires PostgreSQL database connection
+   - Chat works offline for cached messages only
+
+================================================================================
+                      TROUBLESHOOTING GUIDE
+================================================================================
+
+Issue: Chat widget doesn't appear
+Fix: Check if DOM loads, console for JavaScript errors
+
+Issue: "Database not loaded" message
+Fix: 
+- Ensure server running on http://localhost:5000
+- Check /api/all-data endpoint returns data
+- Check browser console for CORS errors
+
+Issue: GROK API returns error
+Fix:
+- Verify API_KEY is valid and active
+- Check internet connection
+- Review GROK API documentation
+- Check if API rate limit exceeded
+
+Issue: Comparison doesn't work
+Fix:
+- Ensure university names spelled correctly
+- Use exact names: IITU, AITU, KBTU, UIB
+- Check /api/compare-universities endpoint
+- Verify PostgreSQL contains university data
+
+Issue: Chat messages not sending
+Fix:
+- Check isLoading flag
+- Ensure input field not empty
+- Check browser console for errors
+
+================================================================================
+                         FUTURE IMPROVEMENTS
+================================================================================
+
+1. Machine Learning Enhancement
+   - Track which university comparisons are most popular
+   - Predict student preferences based on chat history
+   - Personalized recommendations
+
+2. Real-time Data
+   - Integrate with university APIs for live updates
+   - Show available spots in programs
+   - Display tuition changes in real-time
+
+3. Multi-language Support
+   - Support English, Kazakh, Russian simultaneously
+   - Auto-detect user language preference
+
+4. Advanced Filtering
+   - "Find universities with AI programs in Astana"
+   - "Show me business programs under 2M tenge"
+   - Complex query parsing with NLP
+
+5. User Profiles
+   - Save user preferences
+   - Recommend based on browsing history
+   - Personalized university matches
+
+6. Integration with Application Portal
+   - Direct link to apply from chat
+   - Application status tracking
+   - Scholarship calculator
+
+================================================================================
+                            CONCLUSION
+================================================================================
+
+GROK chatbot provides intelligent, context-aware responses to university selection
+queries. By integrating real PostgreSQL data, students get accurate, up-to-date
+information. The comparison feature allows side-by-side analysis of universities.
+
+Key benefits:
+✓ Real university data from PostgreSQL
+✓ Intelligent AI responses with GROK
+✓ Fast university comparison functionality
+✓ Multiple language support (Russian)
+✓ Easy to extend with new features
+✓ Professional, helpful user experience
+
+The system is production-ready and can handle student inquiries about universities,
+programs, admission requirements, and international opportunities.
+
+================================================================================

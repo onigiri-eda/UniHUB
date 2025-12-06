@@ -13,7 +13,17 @@
   "type": "commonjs",
   "dependencies": {
     "cheerio": "^1.1.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
     "express": "^5.2.1",
     "pg": "^8.16.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/onigiri-eda/UniHUB.git"
+  },
+  "bugs": {
+    "url": "https://github.com/onigiri-eda/UniHUB/issues"
+  },
+  "homepage": "https://github.com/onigiri-eda/UniHUB#readme"
 }

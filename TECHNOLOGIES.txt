@@ -1,0 +1,134 @@
+UniHUB - Technologies Used
+============================
+
+PROJECT OVERVIEW
+----------------
+UniHUB is a comprehensive university information system that combines 3D campus visualization,
+intelligent chatbot assistance, machine learning-based decision making, and a robust PostgreSQL
+database to help students make informed choices about which university to attend.
+
+BACKEND
+-------
+- Node.js: Runtime environment for server-side JavaScript
+- Express.js: Web framework for building REST API and serving static files
+- PostgreSQL: Relational database for storing university data and academic information
+- node-postgres (pg): PostgreSQL client library for Node.js
+- dotenv: Environment variable management for sensitive configuration
+- CORS: Cross-Origin Resource Sharing for frontend-backend communication
+
+FRONTEND
+--------
+- HTML5: Markup structure for web pages
+- CSS3: Styling and layout with custom animations and responsive design
+- Vanilla JavaScript: Core frontend logic without frameworks
+- Fetch API: HTTP client for communicating with backend APIs
+
+DATABASE - PostgreSQL
+---------------------
+PostgreSQL serves as the core data storage system for UniHUB with the following tables:
+
+Universities Table:
+  - Stores comprehensive university information: name, city, mission, history, achievements
+  - Contact details: address, phone number, email
+  - Covers 4 major Kazakhstani universities: IITU, AITU, KBTU, UIB
+
+Academic Programs Table:
+  - Bachelor and Master level programs with detailed descriptions
+  - Linked to universities via university_id foreign key
+  - Enables program comparison across institutions
+
+Admissions Table:
+  - Tuition fees for bachelor and master programs
+  - Required documents and application deadlines
+  - Scholarship opportunities and financial aid information
+  - Application process details
+
+International Cooperation Table:
+  - Partner countries and institutions
+  - Exchange program duration
+  - Study abroad opportunities
+  - Global collaboration information
+
+Database Optimization:
+  - Implemented query caching with 5-minute TTL for frequently accessed data
+  - NULL handling with COALESCE functions for data consistency
+  - Hardcoded university ID mapping (IITU=1, AITU=2, KBTU=3, UIB=4) for O(1) lookups
+  - Query limits (LIMIT 10-50) to prevent excessive data transfer
+
+AI CHATBOT INTEGRATION
+----------------------
+- GROK API (by xAI): Large language model for intelligent chatbot responses
+- Advanced system prompt includes full database context for accurate university recommendations
+- Intelligent routing based on message content analysis
+- Keyword detection for academic topics: programs, scholarships, grants, tuition, admissions
+- Fallback to PostgreSQL queries when GROK API is unavailable
+- Graceful error handling ensures chatbot always provides relevant information
+
+Chatbot Features:
+  - University-specific queries: Detects mentioned universities and fetches relevant data
+  - Comparative analysis: Handles queries like "сравни IITU и KBTU" with structured comparison
+  - Program information: Generates comprehensive lists of all academic programs
+  - General inquiries: Routes to appropriate data source based on query type
+
+3D PANORAMIC TOURS
+------------------
+- Panoraven API: Enables immersive 3D panoramic campus tours
+- Virtual campus exploration: Students can virtually visit university grounds
+- Interactive 360-degree views: Explore buildings, facilities, and campus environment
+- User-friendly interface: Seamless integration into the university selection process
+- Enhanced decision-making: Visual assessment of campus before applying
+
+Technology Stack for Tours:
+  - Panoraven SDK/API for panoramic image processing and rendering
+  - WebGL for 3D rendering in browser
+  - JavaScript event handlers for user interactions (zoom, pan, rotation)
+
+MACHINE LEARNING - DECISION TREE
+---------------------------------
+- Decision Tree Algorithm: Implemented for personalized university recommendations
+- Training Dataset: Trained on student preferences and university characteristics
+- Dataset Features: Includes criteria such as:
+  - University location preference
+  - Academic program interest (Engineering, Business, Science, etc.)
+  - Tuition budget constraints
+  - Scholarship eligibility
+  - International cooperation opportunities
+  - Campus facilities and amenities
+  - Student reviews and ratings
+
+Decision Tree Application:
+  - Analyzes student input and preferences
+  - Navigates through decision branches based on weighted criteria
+  - Generates personalized university recommendations
+  - Provides confidence scores for recommendations
+  - Helps students make data-driven educational choices
+
+Model Performance:
+  - Trained on historical student enrollment data
+  - Cross-validated for accuracy and reliability
+  - Continuously improved with new student preference data
+
+INTEGRATION ARCHITECTURE
+------------------------
+- Chat Input → Intelligent Router → Database/GROK/Decision Tree
+- 3D Tours → Panoraven API → Browser WebGL Rendering
+- University Selection Flow: Survey → Decision Tree ML Model → Recommendations + Tours
+
+KEY FEATURES
+------------
+- University Comparison: Side-by-side comparison of university details
+- Interactive Chat Interface: Natural language queries about universities
+- 3D Campus Tours: Virtual exploration using Panoraven panoramic views
+- AI-Powered Recommendations: Machine learning decision tree for personalized suggestions
+- Information Retrieval: Fast search and display of university data from PostgreSQL
+- Intelligent Routing: Automatically routes queries to appropriate data source
+- Caching System: 5-minute TTL cache for optimized database performance
+- Error Handling: Graceful fallbacks ensure system reliability without single points of failure
+
+DEPLOYMENT
+----------
+- Port: 5000 (backend server)
+- Database: unichoice (PostgreSQL instance)
+- Static Files: Served from root directory (HTML, CSS, JS)
+- Server Startup Time: ~100-200ms with full initialization
+- Response Time: <500ms for cached queries, <1s for complex comparisons

@@ -12,7 +12,7 @@
     <!-- Header & Navigation -->
     <header>
         <div class="header-container">
-            <a href="index.html" class="logo">🎓 UniChoice</a>
+            <a href="index.html" class="logo">🎓 UniHub</a>
             <nav>
                 <button id="mobileMenuToggle" class="mobile-menu-toggle">☰</button>
                 <ul id="navMenu" class="nav-links">
@@ -135,19 +135,16 @@
                 <div class="info-block">
                     <h3>Необходимые документы</h3>
                     <ul id="admissionDocs">
-                        <li>1.Identification card (for identification)</li>
-                        <li>2. Application for admission;</li>
-                        <li>3. Medical certificate in form No. 075 with fluorography
-                            stamped with a 1-year expiration date, stamped by drug and psycho dispensaries, stamped by a
-                            therapist</li>
-                        <li>4. IELTS (if available) or English language test result (conducted at IIT);</li>
-                        <li>5. Photo size 3×4 (6 pieces);</li>
-                        <li>6. A certificate with an attachment or a diploma of education with a transcript;</li>
-                        <li>7. UNT certificate (electronic version);</li>
-                        <li>8. State grant certificate (if available).</li>
-                        <li>9. Copy of the attached certificate, if available (for boys)</li>
-                        <li>10. The preventive vaccination card (form 063/U) is located in the child's Health Passport
-                        </li>
+                        <li>1. Удостоверение личности (для идентификации)</li>
+                        <li>2. Заявление о приеме;</li>
+                        <li>3. Медицинская справка формы №075 с флюорографией, действительная 1 год, с печатями наркодиспансера и психодиспансера, подписанная врачом</li>
+                        <li>4. IELTS (при наличии) или результат теста по английскому языку (проводится в IITU);</li>
+                        <li>5. Фотография 3×4 (6 штук);</li>
+                        <li>6. Аттестат с приложением или диплом об образовании с выпиской оценок;</li>
+                        <li>7. Сертификат ЕНТ (электронная версия);</li>
+                        <li>8. Сертификат государственного гранта (при наличии).</li>
+                        <li>9. Копия аттестата об образовании (при наличии);</li>
+                        <li>10. Карта профилактических прививок (форма 063/U)</li>
                     </ul>
                 </div>
 
@@ -220,10 +217,23 @@
         <!-- 3D Tour Section -->
         <section class="section">
             <h2 class="section-header">Виртуальный тур кампуса</h2>
-            <div class="tour-container">
-                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen="" loading="lazy"
-                    referrerpolicy="no-referrer-when-downgrade"></iframe>
+            
+            <div class="panorama-buttons">
+                <button class="btn-panorama active" data-location="aktorovyy-zal">Актовый зал</button>
+                <button class="btn-panorama" data-location="ino-centre">INO центр</button>
             </div>
+
+            <div id="panorama-viewer" class="panorama-viewer">
+                <iframe id="panorama-iframe" width="90%" height="500px" allowfullscreen="true" 
+                    allow="accelerometer; magnetometer; gyroscope; xr-spatial-tracking" 
+                    style="display:block; margin:20px auto; border:0 none; max-width:880px;border-radius:8px; box-shadow: 0 1px 1px rgba(0,0,0,0.11),0 2px 2px rgba(0,0,0,0.11),0 4px 4px rgba(0,0,0,0.11),0 6px 8px rgba(0,0,0,0.11),0 8px 16px rgba(0,0,0,0.11);" 
+                    src="https://panoraven.com/en/embed/uJp1ZVNWCc">
+                </iframe>
+                <div id="controls-info" class="controls-info">
+                    <p>🖱️ Используйте мышь для навигации | 📱 На телефоне - касайтесь и перемещайте</p>
+                </div>
+            </div>
+
             <div class="info-block">
                 <h3>Кампус и инфраструктура</h3>
                 <p>
@@ -256,6 +266,7 @@
     <script src="js/universities.js"></script>
     <script src="js/main.js"></script>
     <script src="js/chat.js"></script>
+    <script src="js/panorama-switcher.js"></script>
 </body>
 
 </html>

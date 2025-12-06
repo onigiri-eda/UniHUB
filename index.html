@@ -12,7 +12,7 @@
     <!-- Header & Navigation -->
     <header>
         <div class="header-container">
-            <a href="index.html" class="logo">🎓 UniChoice</a>
+            <a href="index.html" class="logo">🎓 UniHub</a>
             <nav>
                 <button id="mobileMenuToggle" class="mobile-menu-toggle">☰</button>
                 <ul id="navMenu" class="nav-links">
@@ -44,14 +44,25 @@
                     <label for="specialization">Какая ваша специальность?</label>
                     <select id="specialization" name="specialization" required>
                         <option value="">Выберите специальность...</option>
-                        <option value="IT Programming">IT / Программирование</option>
-                        <option value="Data Science">Data Science / AI</option>
+                        <option value="Computer Science">Computer Science / Программирование</option>
+                        <option value="Software Engineering">Software Engineering</option>
+                        <option value="Cybersecurity">Кибербезопасность</option>
+                        <option value="Artificial Intelligence">Искусственный интеллект / Machine Learning</option>
+                        <option value="Data Science">Data Science / Big Data</option>
+                        <option value="Cloud Computing">Cloud Computing</option>
+                        <option value="Digital Media">Digital Media / Visual Technologies</option>
+                        <option value="Business Management">Бизнес и менеджмент</option>
+                        <option value="Finance">Финансы / Экономика</option>
+                        <option value="Marketing">Маркетинг</option>
+                        <option value="Project Management">Project Management</option>
+                        <option value="Entrepreneurship">Предпринимательство</option>
                         <option value="Engineering">Инженерия (общая)</option>
                         <option value="Civil Engineering">Гражданское строительство</option>
                         <option value="Mechanical Engineering">Машиностроение</option>
-                        <option value="Oil and Gas Petroleum">Нефть и газ</option>
-                        <option value="Business Management">Бизнес и менеджмент</option>
+                        <option value="Oil and Gas">Нефть и газ</option>
+                        <option value="Communications">Коммуникации / Телекоммуникации</option>
                         <option value="Architecture">Архитектура</option>
+                        <option value="Journalism">Журналистика</option>
                         <option value="Other">Другое</option>
                     </select>
                 </div>
@@ -62,6 +73,7 @@
                     <select id="city" name="city" required>
                         <option value="">Выберите город...</option>
                         <option value="Almaty">Алматы</option>
+                        <option value="Astana">Астана</option>
                         <option value="Aktau">Актау</option>
                         <option value="Atyrau">Атырау</option>
                         <option value="Other">Другой город</option>
@@ -121,7 +133,10 @@
     </footer>
 
     <!-- Scripts -->
+    <script src="js/api-service.js"></script>
     <script src="js/universities.js"></script>
+    <script src="js/database-bridge.js"></script>
+    <script src="js/ml-recommendation.js"></script>
     <script src="js/main.js"></script>
     <script src="js/chat.js"></script>
 </body>

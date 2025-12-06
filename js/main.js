@@ -82,18 +82,40 @@ function handleSurveySubmission() {
     }
   }
 
-  // Get best match
-  const bestMatchId = getBestMatch(answers);
-  const bestMatchUni = getUniversityById(bestMatchId);
+  console.log('Survey answers:', answers);
+
+  // Get ML-based recommendation
+  let mlResult;
+  try {
+    mlResult = getMLRecommendation(answers);
+    console.log('ML Result:', mlResult);
+  } catch (error) {
+    console.error('Error getting ML recommendation:', error);
+    alert('Ошибка при обработке результатов. Пожалуйста, попробуйте снова.');
+    return;
+  }
+
+  if (!mlResult) {
+    console.error('No ML result received');
+    alert('Не удалось получить результаты. Пожалуйста, попробуйте снова.');
+    return;
+  }
+
+  console.log('Best match ID:', mlResult.bestMatch);
+  const bestMatchUni = getUniversityById(mlResult.bestMatch);
+  console.log('University data:', bestMatchUni);
 
   if (bestMatchUni) {
-    displayBestMatch(bestMatchUni);
+    displayBestMatch(bestMatchUni, mlResult);
     smoothScrollToResults();
+  } else {
+    console.error('University not found for ID:', mlResult.bestMatch);
+    alert('Университет не найден. Пожалуйста, попробуйте снова.');
   }
 }
 
 // Display best match results
-function displayBestMatch(university) {
+function displayBestMatch(university, mlResult) {
   let resultsContainer = document.getElementById('resultsContainer');
 
   // Create container if it doesn't exist
@@ -112,8 +134,45 @@ function displayBestMatch(university) {
   // Clear previous results
   resultsContainer.innerHTML = '';
 
-  // Create best match HTML
-  const matchPercentage = Math.floor(Math.random() * (98 - 75) + 75); // Random 75-98%
+  // Use ML confidence if available, otherwise use a random value
+  const matchPercentage = mlResult ? mlResult.confidence : Math.floor(Math.random() * (98 - 75) + 75);
+
+  // Create detailed ML analysis
+  const mlAnalysis = mlResult ? `
+    <div class="ml-analysis">
+      <h4>🤖 Анализ искусственного интеллекта:</h4>
+      <div class="ml-scores">
+        <div class="ml-score-item">
+          <span class="uni-name">IITU</span>
+          <div class="ml-score-bar">
+            <div class="ml-score-fill" style="width: ${mlResult.scores.iitu}%; background: #3498db;"></div>
+          </div>
+          <span class="ml-score-value">${Math.round(mlResult.scores.iitu)}%</span>
+        </div>
+        <div class="ml-score-item">
+          <span class="uni-name">AITU</span>
+          <div class="ml-score-bar">
+            <div class="ml-score-fill" style="width: ${mlResult.scores.aitu}%; background: #2ecc71;"></div>
+          </div>
+          <span class="ml-score-value">${Math.round(mlResult.scores.aitu)}%</span>
+        </div>
+        <div class="ml-score-item">
+          <span class="uni-name">KBTU</span>
+          <div class="ml-score-bar">
+            <div class="ml-score-fill" style="width: ${mlResult.scores.kbtu}%; background: #e74c3c;"></div>
+          </div>
+          <span class="ml-score-value">${Math.round(mlResult.scores.kbtu)}%</span>
+        </div>
+        <div class="ml-score-item">
+          <span class="uni-name">UIB</span>
+          <div class="ml-score-bar">
+            <div class="ml-score-fill" style="width: ${mlResult.scores.uib}%; background: #f39c12;"></div>
+          </div>
+          <span class="ml-score-value">${Math.round(mlResult.scores.uib)}%</span>
+        </div>
+      </div>
+    </div>
+  ` : '';
 
   const resultsHTML = `
     <div class="best-match-result fade-in">
@@ -131,6 +190,8 @@ function displayBestMatch(university) {
           </div>
           <div class="score-value">${matchPercentage}%</div>
         </div>
+
+        ${mlAnalysis}
 
         <div class="key-strengths">
           <h4>Ключевые преимущества:</h4>

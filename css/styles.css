@@ -748,8 +748,11 @@ ul li, ol li {
   padding: 0.75rem 1rem;
   border-radius: 12px;
   word-wrap: break-word;
-  font-size: 0.95rem;
-  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .user-message .message-content {
@@ -763,6 +766,7 @@ ul li, ol li {
   color: var(--text-primary);
   border-radius: 4px 12px 12px 12px;
   border: 1px solid var(--border-color);
+  max-width: 95%;
 }
 
 .message-content ul {
@@ -990,3 +994,151 @@ footer p {
 .p-2 { padding: 1rem; }
 .p-3 { padding: 1.5rem; }
 .p-4 { padding: 2rem; }
+
+/* ============================================
+   PANORAMA VIEWER STYLES
+   ============================================ */
+
+.panorama-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.btn-panorama {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-panorama:hover {
+  background-color: var(--primary-color);
+  color: var(--white);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-panorama.active {
+  background-color: var(--primary-color);
+  color: var(--white);
+  box-shadow: var(--shadow-lg);
+}
+
+.panorama-viewer {
+  width: 100%;
+  margin-bottom: 2rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background-color: #000;
+}
+
+#panorama-iframe {
+  display: block;
+}
+
+.controls-info {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  border-top: 1px solid var(--border-color);
+}
+
+/* Responsive panorama viewer */
+@media (max-width: 768px) {
+  .panorama-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .btn-panorama {
+    width: 100%;
+  }
+
+  .panorama-viewer {
+    min-height: 300px;
+  }
+
+  #panorama-iframe {
+    min-height: 300px !important;
+  }
+}
+
+/* ============================================
+   ML RECOMMENDATION STYLES
+   ============================================ */
+
+.ml-analysis {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin: 1.5rem 0;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.ml-analysis h4 {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ml-scores {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.ml-score-item {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 1rem;
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.ml-score-item .uni-name {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.ml-score-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.ml-score-fill {
+  height: 100%;
+  transition: width 1s ease-out;
+  border-radius: 4px;
+}
+
+.ml-score-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .ml-scores {
+    grid-template-columns: 1fr;
+  }
+}
+
